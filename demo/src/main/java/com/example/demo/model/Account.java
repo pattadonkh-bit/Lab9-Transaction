@@ -1,13 +1,9 @@
 package com.example.demo.model;
 
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 
 @Entity
 public class Account {
@@ -19,13 +15,6 @@ public class Account {
     private String accountNumber;
     private String ownerName;
     private Double balance;
-
-    @OneToMany(
-        mappedBy = "account",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
-    )
-    private List<DepositTransaction> transactions;
 
     public Long getId() {
         return id;
@@ -43,10 +32,6 @@ public class Account {
         return balance;
     }
 
-    public List<DepositTransaction> getTransactions() {
-        return transactions;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -61,9 +46,5 @@ public class Account {
 
     public void setBalance(Double balance) {
         this.balance = balance;
-    }
-
-    public void setTransactions(List<DepositTransaction> transactions) {
-        this.transactions = transactions;
     }
 }
