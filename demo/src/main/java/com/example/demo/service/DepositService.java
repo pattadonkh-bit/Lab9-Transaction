@@ -16,7 +16,8 @@ public class DepositService {
     private final AccountRepository accountRepository;
     private final DepositTransactionRepository depositTransactionRepository;
 
-    public DepositService(AccountRepository accountRepository,DepositTransactionRepository depositTransactionRepository) {
+    public DepositService(AccountRepository accountRepository,
+                          DepositTransactionRepository depositTransactionRepository) {
         this.accountRepository = accountRepository;
         this.depositTransactionRepository = depositTransactionRepository;
     }
@@ -24,26 +25,27 @@ public class DepositService {
     @Transactional
     public void deposit(Long accountId, double amount) {
 
-        // ตรวจสอบจำนวนเงิน
         if (amount <= 0) {
             throw new RuntimeException("จำนวนเงินฝากต้องมากกว่า 0");
         }
 
-        // ค้นหาบัญชี
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
-        // เพิ่มเงินในบัญชี
-        account.setBalance(account.getBalance() + amount);
+        double currentBalance = account.getBalance() == null
+                ? 0.0
+                : account.getBalance();
+
+        account.setBalance(currentBalance + amount);
+
         accountRepository.save(account);
 
-        // สร้างรายการฝากเงิน
         DepositTransaction transaction = new DepositTransaction();
         transaction.setAccount(account);
         transaction.setAmount(amount);
         transaction.setTransactionDate(LocalDateTime.now());
 
-        // บันทึก Deposit Transaction
         depositTransactionRepository.save(transaction);
+
     }
 }
